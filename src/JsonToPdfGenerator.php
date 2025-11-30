@@ -40,7 +40,33 @@ class JsonToPdfGenerator
         $this->setupHeaderFooter();
         $this->pdf->AddPage();
         $this->currentPageNumber = 1;
+
+        // Render header on first page
+        $this->renderHeaderIfNeeded();
+
         $this->renderBody();
+
+        // Render footer on last page
+        $this->renderFooterIfNeeded();
+    }
+
+    private function renderHeaderIfNeeded(): void
+    {
+        if ($this->headerHeight > 0 && $this->shouldRenderOnPage($this->headerRepeat, $this->pdf->getPage())) {
+            $this->renderHeader($this->pdf);
+        }
+    }
+
+    private function renderFooterIfNeeded(): void
+    {
+        if ($this->footerHeight > 0 && $this->shouldRenderOnPage($this->footerRepeat, $this->pdf->getPage())) {
+            $currentY = $this->pdf->GetY();
+            $this->renderFooter($this->pdf);
+            // Restore Y position after footer
+            if ($currentY < $this->pageHeight - $this->bottomMargin - $this->footerHeight) {
+                $this->pdf->SetY($currentY);
+            }
+        }
     }
 
     private function applyMeta(): void
@@ -92,28 +118,11 @@ class JsonToPdfGenerator
             $this->footerRepeat = $footer['repeatOnPages'] ?? 'all';
         }
 
-        $generator = $this;
+        // Disable default header/footer
+        $this->pdf->setPrintHeader(false);
+        $this->pdf->setPrintFooter(false);
 
-        $this->pdf->setHeaderCallback(function($pdf) use ($generator) {
-            $generator->renderHeader($pdf);
-        });
-
-        $this->pdf->setFooterCallback(function($pdf) use ($generator) {
-            $generator->renderFooter($pdf);
-        });
-
-        if ($this->headerHeight > 0) {
-            $this->pdf->SetHeaderMargin(5);
-            $this->pdf->setHeaderData();
-        } else {
-            $this->pdf->setPrintHeader(false);
-        }
-
-        if ($this->footerHeight > 0) {
-            $this->pdf->SetFooterMargin($this->footerHeight);
-        } else {
-            $this->pdf->setPrintFooter(false);
-        }
+        // We'll render header/footer manually after each page is added
     }
 
     public function renderHeader(TCPDF $pdf): void
@@ -541,8 +550,14 @@ class JsonToPdfGenerator
 
     private function renderPageBreakElement(): void
     {
+        // Render footer on current page before break
+        $this->renderFooterIfNeeded();
+
         $this->pdf->AddPage();
         $this->currentPageNumber++;
+
+        // Render header on new page
+        $this->renderHeaderIfNeeded();
     }
 
     private function mapAlign(string $align): string

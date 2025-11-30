@@ -1,0 +1,22 @@
+{
+  "layout": {
+    "version": "1.0",
+    "page": {
+      "size": "A4",
+      "orientation": "P"
+    },
+    "body": {
+      "elements": [
+        {
+          "type": "text",
+          "content": "Hello World!",
+          "style": {
+            "fontSize": 20
+          }
+        }
+      ]
+    }
+  },
+  "data": {},
+  "action": "preview"
+}

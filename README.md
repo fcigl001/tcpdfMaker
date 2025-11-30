@@ -1,25 +1,85 @@
 # JSON to PDF Generator for TCPDF
 
-A PHP library that renders PDF documents from JSON layout descriptions using TCPDF.
+A PHP library that renders PDF documents from JSON layout descriptions using TCPDF, with a browser-based visual editor.
+
+## Features
+
+- **Visual Layout Editor**: Drag-and-drop interface for designing PDF layouts
+- **PHP Backend**: Powerful TCPDF-based PDF generation engine
+- **JSON-Based**: Define layouts in JSON for easy version control and reuse
+- **Real-time Preview**: Generate and preview PDFs directly in the browser
 
 ## Requirements
 
 - PHP 7.4+
 - TCPDF library (installed via Composer)
+- Node.js (for running the frontend)
 
 ## Installation
 
+### Backend Setup
+
+Navigate to the frontend directory and install PHP dependencies:
+
 ```bash
-composer require tecnickcom/tcpdf
+cd frontend
+composer install
 ```
 
-Then include the generator:
+### Frontend Setup
 
-```php
-require_once 'src/JsonToPdfGenerator.php';
+Install Node.js dependencies:
+
+```bash
+cd frontend
+npm install
 ```
 
-## Quick Start
+## Running the Application
+
+You need to run both the PHP backend and the React frontend:
+
+### 1. Start the PHP Server
+
+From the project root:
+
+```bash
+./start-server.sh
+```
+
+Or manually:
+
+```bash
+cd frontend
+php -S localhost:8000
+```
+
+The PHP API will be available at `http://localhost:8000/api.php`
+
+### 2. Start the React Frontend
+
+In a new terminal, from the frontend directory:
+
+```bash
+cd frontend
+npm run dev
+```
+
+The editor will be available at `http://localhost:5173` (or another port if 5173 is in use)
+
+### 3. Using the Editor
+
+1. Open the editor in your browser
+2. Drag elements from the sidebar to design your PDF layout
+3. Configure element properties in the right panel
+4. Click **Preview PDF** to see the result in a new tab
+5. Click **Download PDF** to save the PDF to your computer
+
+## Programmatic Usage
+
+You can also use the PHP library directly in your code:
+
+### Quick Start
 
 ```php
 $json = file_get_contents('layout.json');
