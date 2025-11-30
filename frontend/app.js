@@ -55,7 +55,7 @@ let elementIdCounter = 0;
 let selectedElementId = null;
 let selectedSection = 'body';
 let editingStyleName = null;
-let previewScale = 0.75;
+let previewScale = 1.0;
 
 // Main layout object matching the schema
 let layout = null;
